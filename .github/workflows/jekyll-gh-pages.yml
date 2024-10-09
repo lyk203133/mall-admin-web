@@ -1,8 +1,7 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+name: Deploy Vue 3 with GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes to the master branch
   push:
     branches: ["master"]
 
@@ -15,8 +14,7 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Ensure only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -26,19 +24,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
 
-  # Deployment job
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Use Node.js version compatible with Vue
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Vue 3 project
+        run: npm run build # Ensure this is your Vue build command
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist # Ensure this is the directory where the build outputs go (usually `dist` for Vite)
+
+  # Deploy job
   deploy:
     environment:
       name: github-pages
